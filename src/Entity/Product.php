@@ -3,12 +3,14 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
  * @UniqueEntity(fields={"name"})
+ * @Serializer\ExclusionPolicy(policy="NONE")
  */
 class Product extends AbstractEntity
 {
@@ -17,12 +19,16 @@ class Product extends AbstractEntity
      * @var string|null
      * @ORM\Column(type="string", length=20, nullable=false, unique=true)
      * @Assert\Length(min=5, max=20)
+     * @Serializer\Expose()
+     * @Serializer\Type("string")
      */
     private $name = null;
 
     /**
      * @var Category|null
      * @ORM\ManyToOne(targetEntity="Category")
+     * @Serializer\Expose()
+     * @Serializer\Type("App\Entity\Category")
      */
     private $category = null;
 
@@ -31,6 +37,8 @@ class Product extends AbstractEntity
      * @ORM\Column(type="string", length=4, nullable=false, unique=true)
      * @Assert\Length(max=4)
      * @Assert\Regex(pattern="/^[A-J]\d{3}$/")
+     * @Serializer\Expose()
+     * @Serializer\Type("string")
      */
     private $symbol = null;
 

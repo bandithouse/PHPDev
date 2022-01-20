@@ -42,4 +42,17 @@ class CategoryController extends AppController
 
         return new JsonResponse(['errors' => $this->handleErrors($form)], 400);
     }
+
+    /**
+     * @Route("", name="list", methods={"GET"})
+     * @param SerializerInterface $serializer
+     * @return JsonResponse
+     */
+    public function listAction(SerializerInterface $serializer): JsonResponse
+    {
+        $categoryRepository = $this->getDoctrine()->getRepository(Category::class);
+        $categories = $categoryRepository->findAll();
+        $serializedCategories = $serializer->serialize($categories, 'json');
+        return new JsonResponse($serializedCategories, 200, [], true);
+    }
 }

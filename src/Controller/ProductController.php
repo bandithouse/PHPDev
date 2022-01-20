@@ -5,10 +5,10 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Form\ProductForm;
 use App\Service\ProductManager;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @Route("/api/product", name="app_product_")
@@ -41,5 +41,18 @@ class ProductController extends AppController
         }
 
         return new JsonResponse(['errors' => $this->handleErrors($form)], 400);
+    }
+
+    /**
+     * @Route("", name="list", methods={"GET"})
+     * @param SerializerInterface $serializer
+     * @return JsonResponse
+     */
+    public function listAction(SerializerInterface $serializer): JsonResponse
+    {
+        $productRepository = $this->getDoctrine()->getRepository(Product::class);
+        $products = $productRepository->findAll();
+        $serializedProducts = $serializer->serialize($products, 'json');
+        return new JsonResponse($serializedProducts, 200, [], true);
     }
 }
